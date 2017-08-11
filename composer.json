@@ -1,0 +1,32 @@
+{
+    "name": "gorilla/laravel",
+    "type": "library",
+    "description": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Casper Lai",
+            "email": "casper.lai@sleepingdesign.com"
+        },
+        {
+            "name": "Anthony Gherghetta",
+            "email": "anthony@searchplus.com.au"
+        }
+    ],
+    "require": {
+        "gorilla/website": "~0.1",
+        "illuminate/support": "~5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gorilla\\Laravel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gorilla\\Laravel\\GorillaServiceProvider"
+            ]
+        }
+    }
+}
