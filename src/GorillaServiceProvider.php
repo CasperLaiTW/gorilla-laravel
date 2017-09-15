@@ -29,12 +29,19 @@ class GorillaServiceProvider extends ServiceProvider
 
     /**
      * Register service
+     *
+     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
+     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function register()
     {
         $this->mergeConfigFrom($this->configPath, 'gorilla');
         $this->app->singleton('gorilla', function ($app) {
-            return new Client(config('gorilla.id'), config('gorilla.token'));
+            $client = new Client(config('gorilla.id'), config('gorilla.token'));
+            $client->setCachePath(storage_path('framework/cache'));
+            
+            return $client;
         });
     }
 
