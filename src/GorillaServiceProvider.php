@@ -40,7 +40,7 @@ class GorillaServiceProvider extends ServiceProvider
         $this->app->singleton('gorilla', function ($app) {
             $client = new Client(config('gorilla.id'), config('gorilla.token'));
             $client->setCachePath(storage_path('framework/cache'));
-            
+            $client->setDefaultCacheSecond(config('gorilla.defaultCacheSeconds'));
             return $client;
         });
     }
