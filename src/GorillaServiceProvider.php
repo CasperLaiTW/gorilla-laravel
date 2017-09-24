@@ -3,6 +3,7 @@
 namespace Gorilla\Laravel;
 
 use Gorilla\Client;
+use Gorilla\Laravel\Commands\ClearCacheCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -39,10 +40,21 @@ class GorillaServiceProvider extends ServiceProvider
         $this->mergeConfigFrom($this->configPath, 'gorilla');
         $this->app->singleton('gorilla', function ($app) {
             $client = new Client(config('gorilla.id'), config('gorilla.token'));
-            $client->setCachePath(storage_path('framework/cache'));
+            $client->setCachePath(config('gorilla.cacheDirectory'));
             $client->setDefaultCacheSecond(config('gorilla.defaultCacheSeconds'));
             return $client;
         });
+        $this->registerCommands();
+    }
+
+    /**
+     *
+     */
+    private function registerCommands()
+    {
+        $this->commands([
+            ClearCacheCommand::class,
+        ]);
     }
 
     /**
