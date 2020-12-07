@@ -8,9 +8,8 @@
 
 namespace Gorilla\Laravel\Commands;
 
-use Gorilla\Laravel\GorillaFacade;
 use Illuminate\Console\Command;
-use phpFastCache\CacheManager;
+use Illuminate\Filesystem\Filesystem;
 
 class ClearCacheCommand extends Command
 {
@@ -29,17 +28,14 @@ class ClearCacheCommand extends Command
 
     /**
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
      */
     public function handle()
     {
-        CacheManager::setDefaultConfig([
-            'path' => config('gorilla.cacheDirectory'),
-            'ignoreSymfonyNotice' => true,
-        ]);
-        CacheManager::getInstance('files')->clear();
+        tap(new Filesystem, function (Filesystem $file) {
+            collect($file->directories(config('gorilla.cacheDirectory')))->each(function ($directory) use ($file) {
+                $file->cleanDirectory($directory);
+            });
+        });
         $this->comment('Clear cache success');
     }
 }
