@@ -17,12 +17,16 @@
         "gorilla/website": "*",
         "illuminate/support": "^5.1|^6.0|^7.0|^8.0",
         "illuminate/console": "^5.1|^6.0|^7.0|^8.0",
-        "illuminate/filesystem": "^5.1|^6.0|^7.0|^8.0"
+        "illuminate/filesystem": "^5.1|^6.0|^7.0|^8.0",
+        "spatie/url": "^1.3"
     },
     "autoload": {
         "psr-4": {
             "Gorilla\\Laravel\\": "src/"
-        }
+        },
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "extra": {
         "laravel": {

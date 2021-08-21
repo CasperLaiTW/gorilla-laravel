@@ -4,6 +4,7 @@ namespace Gorilla\Laravel;
 
 use Gorilla\Client;
 use Gorilla\Laravel\Commands\ClearCacheCommand;
+use Gorilla\Laravel\Commands\WebsiteInfoCommand;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -45,6 +46,9 @@ class GorillaServiceProvider extends ServiceProvider
             return $client;
         });
         $this->registerCommands();
+        $this->app->singleton(GorillaDashUrl::class, function () {
+            return new GorillaDashUrl();
+        });
     }
 
     /**
@@ -54,6 +58,7 @@ class GorillaServiceProvider extends ServiceProvider
     {
         $this->commands([
             ClearCacheCommand::class,
+            WebsiteInfoCommand::class,
         ]);
     }
 
