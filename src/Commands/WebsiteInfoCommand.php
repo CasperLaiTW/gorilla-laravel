@@ -4,6 +4,7 @@ namespace Gorilla\Laravel\Commands;
 
 use Gorilla\Laravel\GorillaFacade;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use const Grpc\STATUS_OUT_OF_RANGE;
 
@@ -45,6 +46,8 @@ class WebsiteInfoCommand extends Command
      */
     public function handle()
     {
+        // refresh access token
+        File::deleteDirectory(storage_path('framework/cache'), true);
         $data = GorillaFacade::query('websiteInfo')
             ->fields([
                 'url',
