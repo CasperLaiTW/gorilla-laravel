@@ -26,7 +26,7 @@ class GorillaDashTrackingUrlParametersMiddleware
                     'parameter' => $parameter,
                     'value' => $value,
                     'path' => $path,
-                    'created_at' => Carbon::now(),
+                    'session_at' => Carbon::now()->toDateTimeString(),
                 ];
             }
             Session::put('tracking-data', $data);
