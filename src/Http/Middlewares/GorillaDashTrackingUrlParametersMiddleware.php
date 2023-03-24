@@ -5,6 +5,7 @@ namespace Gorilla\Laravel\Http\Middlewares;
 use Carbon\Carbon;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 
 class GorillaDashTrackingUrlParametersMiddleware
@@ -20,16 +21,25 @@ class GorillaDashTrackingUrlParametersMiddleware
             $parameters = $request->query();
             $path = $request->path();
 
-            $data = Session::get('tracking-data', []);
-            foreach ($parameters as $parameter => $value) {
-                $data["{$parameter}_{$value}_{$path}"] = [
-                    'parameter' => $parameter,
-                    'value' => $value,
-                    'path' => $path,
-                    'session_at' => Carbon::now()->toDateTimeString(),
-                ];
-            }
-            Session::put('tracking-data', $data);
+            $oldData = Session::get('tracking-data', []);
+
+            $data = collect(collect($parameters))
+                ->reject(function ($value, $parameter) {
+                    return in_array($parameter, Config::get('gorilla.tracking_url_blacklist', []), true);
+                })
+                ->mapWithKeys(function($value, $parameter) use ($path) {
+                    return [
+                        "{$parameter}_{$value}_{$path}" => [
+                            'parameter' => $parameter,
+                            'value' => $value,
+                            'path' => $path,
+                            'session_at' => Carbon::now()->toDateTimeString(),
+                        ]
+                    ];
+                })
+                ->toArray();
+
+            Session::put('tracking-data', array_merge($oldData, $data));
         }
 
         return $next($request);
