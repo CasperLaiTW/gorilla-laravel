@@ -17,8 +17,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static boolean isCacheEnabled()
  * @method static int getCacheSeconds()
  * @method static \GuzzleHttp\Psr7\Response\JsonResponse|string get()
+ * @method static array makeEnquiryFormData(array $attributes)
  *
- * @see \Gorilla\Client
+ * @see Client
  */
 class GorillaFacade extends Facade
 {

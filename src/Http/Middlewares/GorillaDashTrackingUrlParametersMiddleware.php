@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
+use Jenssegers\Agent\Facades\Agent;
 
 class GorillaDashTrackingUrlParametersMiddleware
 {
@@ -21,7 +22,22 @@ class GorillaDashTrackingUrlParametersMiddleware
             $parameters = $request->query();
             $path = $request->path();
 
-            $oldData = Session::get('tracking-data', []);
+            $browser = Agent::browser();
+            $device = Agent::deviceType();
+            $oldData = array_merge(Session::get('tracking-data', []), [
+                'browser' => [
+                    'parameter' => 'browser',
+                    'value' => $browser,
+                    'path' => null,
+                    'session_at' => Carbon::now()->toDateTimeString()
+                ],
+                'device' => [
+                    'parameter' => 'device',
+                    'value' => $device,
+                    'path' => null,
+                    'session_at' => Carbon::now()->toDateTimeString()
+                ],
+            ]);
 
             $data = collect(collect($parameters))
                 ->reject(function ($value, $parameter) {

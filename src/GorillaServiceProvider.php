@@ -2,9 +2,9 @@
 
 namespace Gorilla\Laravel;
 
-use Gorilla\Client;
 use Gorilla\Laravel\Commands\ClearCacheCommand;
 use Gorilla\Laravel\Commands\WebsiteInfoCommand;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -32,17 +32,14 @@ class GorillaServiceProvider extends ServiceProvider
     /**
      * Register service
      *
-     * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidArgumentException
-     * @throws \phpFastCache\Exceptions\phpFastCacheInvalidConfigurationException
      */
     public function register()
     {
         $this->mergeConfigFrom($this->configPath, 'gorilla');
         $this->app->singleton('gorilla', function ($app) {
-            $client = new Client(config('gorilla.id'), config('gorilla.token'));
-            $client->setCachePath(config('gorilla.cacheDirectory'));
-            $client->setDefaultCacheSecond(config('gorilla.defaultCacheSeconds'));
+            $client = new Client(Config::get('gorilla.id'), Config::get('gorilla.token'));
+            $client->setCachePath(Config::get('gorilla.cacheDirectory'));
+            $client->setDefaultCacheSecond(Config::get('gorilla.defaultCacheSeconds'));
             return $client;
         });
         $this->registerCommands();
