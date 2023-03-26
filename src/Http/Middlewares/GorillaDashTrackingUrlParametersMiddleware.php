@@ -22,18 +22,22 @@ class GorillaDashTrackingUrlParametersMiddleware
             $parameters = $request->query();
             $path = $request->path();
 
-            $browser = Agent::browser();
-            $device = Agent::deviceType();
             $oldData = array_merge(Session::get('tracking-data', []), [
                 'browser' => [
                     'parameter' => 'browser',
-                    'value' => $browser,
+                    'value' => Agent::browser(),
                     'path' => null,
                     'session_at' => Carbon::now()->toDateTimeString()
                 ],
                 'device' => [
                     'parameter' => 'device',
-                    'value' => $device,
+                    'value' => Agent::deviceType(),
+                    'path' => null,
+                    'session_at' => Carbon::now()->toDateTimeString()
+                ],
+                'operating_system' => [
+                    'parameter' => 'operating_system',
+                    'value' => Agent::platform(),
                     'path' => null,
                     'session_at' => Carbon::now()->toDateTimeString()
                 ],
