@@ -20,6 +20,7 @@ class Client extends BaseClient
         $baseAttribute = [
             'browser' => Agent::browser(),
             'device' => Agent::deviceType(),
+            'operating_system' => Agent::device(),
             'tracking_data' => collect(Session::get('tracking-data', []))->values()->toArray(),
         ];
 
