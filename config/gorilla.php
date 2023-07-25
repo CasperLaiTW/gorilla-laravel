@@ -11,4 +11,8 @@ return [
         'width',
         'height',
     ],
+    'queue' => 'default',
+    'cache' => [
+        'rate_limit_minutes' => 30,
+    ],
 ];

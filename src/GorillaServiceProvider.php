@@ -5,7 +5,9 @@ namespace Gorilla\Laravel;
 use Gorilla\Laravel\Commands\ClearCacheCommand;
 use Gorilla\Laravel\Commands\WebsiteInfoCommand;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Cache\RateLimiting\Limit;
 
 /**
  * Class GorillaServiceProvider
@@ -17,7 +19,7 @@ class GorillaServiceProvider extends ServiceProvider
     /**
      * @var string
      */
-    private $configPath = __DIR__ . '/../config/gorilla.php';
+    private $configPath = __DIR__.'/../config/gorilla.php';
 
     /**
      * Booting of service
@@ -27,6 +29,13 @@ class GorillaServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../config/gorilla.php' => $this->app->configPath().'/gorilla.php',
         ], 'config');
+        RateLimiter::for('graphql-cache', function (object $job) {
+            return Limit::perMinutes(
+                Config::get('gorilla.cache.rate_limit_minutes', 30),
+                1
+            )
+                ->by($job->uniqueKey);
+        });
     }
 
     /**

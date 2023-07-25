@@ -2,6 +2,7 @@
 
 namespace Gorilla\Laravel;
 
+use Gorilla\Entities\GraphQL;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static int getCacheSeconds()
  * @method static \GuzzleHttp\Psr7\Response\JsonResponse|string get()
  * @method static array makeEnquiryFormData(array $attributes)
+ * @method static array queryByGraphQL(GraphQL $graphQL)
  *
  * @see Client
  */
