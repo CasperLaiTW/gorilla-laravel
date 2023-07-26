@@ -4,6 +4,7 @@ namespace Gorilla\Laravel;
 
 use Gorilla\Client as BaseClient;
 use Gorilla\Entities\GraphQL;
+use Gorilla\Laravel\Events\QueryExecutedEvent;
 use Gorilla\Laravel\Job\CacheQueryInBackgroundJob;
 use Illuminate\Support\Facades\Session;
 use Jenssegers\Agent\Facades\Agent;
@@ -43,8 +44,7 @@ class Client extends BaseClient
             ->setHandleCacheByClient(true)
             ->cache(31536000);
 
-        CacheQueryInBackgroundJob::dispatch($this->getGraphQLKey($graphQL), $graphQL)
-            ->onQueue(config('gorilla.queue'));
+        QueryExecutedEvent::dispatch($this->getGraphQLKey($graphQL), $graphQL);
         $response = $this->request->request($graphQL);
 
         $this->queries->reset();

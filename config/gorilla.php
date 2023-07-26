@@ -1,5 +1,7 @@
 <?php
 
+use Gorilla\Laravel\Listeners\CacheInBackgroundListener;
+
 return [
     'id' => env('GORILLA_OAUTH_ID'),
     'token' => env('GORILLA_OAUTH_TOKEN'),
@@ -15,4 +17,5 @@ return [
     'cache' => [
         'rate_limit_minutes' => 30,
     ],
+    'listener' => [CacheInBackgroundListener::class, 'handle'],
 ];

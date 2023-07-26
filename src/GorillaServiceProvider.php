@@ -4,7 +4,10 @@ namespace Gorilla\Laravel;
 
 use Gorilla\Laravel\Commands\ClearCacheCommand;
 use Gorilla\Laravel\Commands\WebsiteInfoCommand;
+use Gorilla\Laravel\Events\QueryExecutedEvent;
+use Gorilla\Laravel\Listeners\CacheInBackgroundListener;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -36,6 +39,13 @@ class GorillaServiceProvider extends ServiceProvider
             )
                 ->by($job->uniqueKey);
         });
+
+        if (Config::get('gorilla.listener')) {
+            Event::listen(
+                QueryExecutedEvent::class,
+                Config::get('gorilla.listener')
+            );
+        }
     }
 
     /**
