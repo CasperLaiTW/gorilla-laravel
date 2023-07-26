@@ -44,7 +44,9 @@ class Client extends BaseClient
             ->setHandleCacheByClient(true)
             ->cache(31536000);
 
-        QueryExecutedEvent::dispatch($this->getGraphQLKey($graphQL), $graphQL);
+        if ($graphQL->isQuery()) {
+            QueryExecutedEvent::dispatch($this->getGraphQLKey($graphQL), $graphQL);
+        }
         $response = $this->request->request($graphQL);
 
         $this->queries->reset();
