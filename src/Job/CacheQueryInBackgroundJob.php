@@ -61,4 +61,12 @@ class CacheQueryInBackgroundJob implements ShouldQueue, ShouldBeUnique
     {
         return $this->uniqueKey;
     }
+
+    /**
+     * @return array
+     */
+    public function tags(): array
+    {
+        return ['graphql-cache', $this->uniqueKey];
+    }
 }
