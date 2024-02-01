@@ -5,7 +5,6 @@ namespace Gorilla\Laravel;
 use Gorilla\Client as BaseClient;
 use Gorilla\Entities\GraphQL;
 use Gorilla\Laravel\Events\QueryExecutedEvent;
-use Gorilla\Laravel\Job\CacheQueryInBackgroundJob;
 use Illuminate\Support\Facades\Session;
 use Jenssegers\Agent\Facades\Agent;
 
@@ -14,6 +13,11 @@ use Jenssegers\Agent\Facades\Agent;
  */
 class Client extends BaseClient
 {
+    /**
+     * @var bool
+     */
+    private $ignoreCache = false;
+
     /**
      * @param  array  $attributes
      * @return array
@@ -30,6 +34,17 @@ class Client extends BaseClient
         return array_merge($baseAttribute, $attributes);
     }
 
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function ignoreCache($value)
+    {
+        $this->ignoreCache = $value;
+        return $this;
+    }
+
     /**
      * @return \Gorilla\Response\JsonResponse|string
      * @throws \GuzzleHttp\Exception\GuzzleException
@@ -43,6 +58,10 @@ class Client extends BaseClient
         $graphQL = (new GraphQL($this->queries))
             ->setHandleCacheByClient(true)
             ->cache(31536000);
+
+        if ($this->ignoreCache) {
+            $graphQL->withoutCacheContent();
+        }
 
         if ($graphQL->isQuery()) {
             QueryExecutedEvent::dispatch($this->getGraphQLKey($graphQL), $graphQL);
@@ -67,6 +86,18 @@ class Client extends BaseClient
         return $this->request->request($graphQL);
     }
 
+    /**
+     * @return \Gorilla\GraphQL\Collection
+     */
+    public function getQueries()
+    {
+        return $this->queries;
+    }
+
+    /**
+     * @param  GraphQL  $graphQL
+     * @return string
+     */
     protected function getGraphQLKey(GraphQL $graphQL)
     {
         return md5(json_encode($graphQL->parameters()));
