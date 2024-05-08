@@ -28,7 +28,7 @@ class Client extends BaseClient
             'browser' => Agent::browser(),
             'device' => Agent::deviceType(),
             'operating_system' => Agent::platform(),
-            'tracking_data' => collect(Session::get('tracking-data', []))->values()->toArray(),
+            'tracking_data' => collect(Session::get('tracking-data', []))->values()->toArray() ?: [],
         ];
 
         return array_merge($baseAttribute, $attributes);
