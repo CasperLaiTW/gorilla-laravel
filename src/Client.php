@@ -17,11 +17,13 @@ class Client extends BaseClient
      */
     public function makeEnquiryFormData(array $attributes)
     {
+        $data = blank(Session::get('tracking-data')) ? [] : Session::get('tracking-data');
+
         $baseAttribute = [
             'browser' => Agent::browser(),
             'device' => Agent::deviceType(),
             'operating_system' => Agent::platform(),
-            'tracking_data' => collect(Session::get('tracking-data', []))->values()->toArray() ?: [],
+            'tracking_data' => collect($data)->values()->toArray() ?: [],
         ];
 
         return array_merge($baseAttribute, $attributes);
